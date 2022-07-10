@@ -18,6 +18,7 @@ namespace MyService.Library.Database
         {
             { "Deadlock", 1205 }
         };
+		
         private static readonly Dictionary<string, int> NetworkingNumbers = new Dictionary<string, int>
         {
             { "ServerNotFound", 258 },
@@ -29,16 +30,19 @@ namespace MyService.Library.Database
             { "NotFound", 26 },
             { "ConnectionAborted", 10053 },
         };
+		
         public static AsyncPolicyWrap GetAllPolicies(int maxRetries, TimeSpan maxTimeout)
         {
             return GetSqlExceptionTimeoutPolicy(maxTimeout)
                     .WrapAsync(GetSqlExceptionTransientPolicy(maxRetries))
                     .WrapAsync(GetSqlExceptionNetworkingPolicy(maxRetries));
         }
+		
         private static AsyncTimeoutPolicy GetSqlExceptionTimeoutPolicy(TimeSpan maxTimeout)
         {
             return Policy.TimeoutAsync(maxTimeout);
         }
+		
         public static AsyncRetryPolicy GetSqlExceptionTransientPolicy(int maxRetries)
         {
             return Policy
@@ -55,6 +59,7 @@ namespace MyService.Library.Database
                         });
                     });
         }
+		
         public static AsyncRetryPolicy GetSqlExceptionNetworkingPolicy(int maxRetries)
         {
             return Policy
